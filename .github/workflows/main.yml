@@ -1,53 +1,32 @@
-// AplicaÃ§Ã£o simples para demonstrar CI/CD
+name: Pipeline de CI/CD - Meu Primeiro Robô
 
-function saudacao(nome) {
+on:
+  push:
+    branches:
+      - main
 
-    if (!nome || nome.trim() === '') {
+  pull_request:
+    branches:
+      - main
 
-        throw new Error('Nome nÃ£o pode estar vazio');
+jobs:
+  verificacoes-basicas:
+    runs-on: ubuntu-latest
 
-    }
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
 
-    return `OlÃ¡, ${nome}! Bem-vindo ao nosso sistema CI/CD!`;
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-}
+      - name: Verificar estrutura
+        run: ls -la
 
-function calcular(a, b, operacao) {
+      - name: Executar aplicação
+        run: node app.js
 
-    switch(operacao) {
-
-        case 'soma':
-
-            return a + b;
-
-        case 'subtracao':
-
-            return a - b;
-
-        case 'multiplicacao':
-
-            return a * b;
-
-        case 'divisao':
-
-            if (b === 0) throw new Error('DivisÃ£o por zero nÃ£o Ã© permitida');
-
-            return a / b;
-
-        default:
-
-            throw new Error('OperaÃ§Ã£o nÃ£o suportada');
-
-    }
-
-}
-
-// Exportar funÃ§Ãµes para testes (em ambiente Node.js)
-
-if (typeof module !== 'undefined' && module.exports) {
-
-    module.exports = { saudacao, calcular };
-
-}
-
-console.log('AplicaÃ§Ã£o carregada com sucesso!');
+      - name: Mensagem sucesso
+        run: echo "Pipeline executado com sucesso!"
